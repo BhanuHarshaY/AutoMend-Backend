@@ -1,0 +1,4 @@
+models/*.safetensors
+models/*.bin
+models/*.pt
+models/pytorch_model.bin
