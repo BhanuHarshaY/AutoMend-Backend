@@ -6,6 +6,12 @@ This service is one component of the larger AutoMend backend. It handles the **c
 
 ---
 
+## Request Flow
+
+![Model 1 (Track A) Inference API flow](docs/track_a_flow.png)
+
+---
+
 ## Repository Structure
 
 ```
