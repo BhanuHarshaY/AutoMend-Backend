@@ -4,8 +4,10 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 import torch
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
+
+from app.schemas.anomaly import LABEL_NAMES, AnomalyRequest, AnomalyResponse
 
 logging.basicConfig(
     level=logging.INFO,
@@ -90,3 +92,26 @@ def health():
         "model_loaded": getattr(app.state, "model_loaded", False),
         "device": str(getattr(app.state, "device", "unknown")),
     }
+
+
+def _run_inference_placeholder(sequence_ids: list[int]) -> tuple[int, float]:
+    # Placeholder -- Task 3 will replace this with real tokenization + forward pass
+    return 0, 0.5
+
+
+@app.post("/predict_anomaly", response_model=AnomalyResponse)
+def predict_anomaly(request: Request, body: AnomalyRequest):
+    if not getattr(request.app.state, "model_loaded", False):
+        raise HTTPException(status_code=503, detail="Model not loaded")
+
+    try:
+        class_id, confidence_score = _run_inference_placeholder(body.sequence_ids)
+    except Exception as exc:
+        logger.exception("Inference error: %s", exc)
+        raise HTTPException(status_code=500, detail="Inference failed")
+
+    return AnomalyResponse(
+        class_id=class_id,
+        confidence_score=confidence_score,
+        label=LABEL_NAMES[class_id],
+    )
