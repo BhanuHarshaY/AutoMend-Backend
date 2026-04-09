@@ -1,0 +1,27 @@
+services:
+  vllm-generator:
+    image: vllm/vllm-openai:latest
+    container_name: vllm-generator
+    runtime: nvidia
+    ports:
+      - "8001:8001"
+    volumes:
+      # Persistent model cache -- avoids re-downloading from GCS on every restart
+      - ./models:/models
+      # GCS service account key (mounted read-only)
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/gcp-key.json:ro
+      # Startup script
+      - ./startup.sh:/startup.sh:ro
+    environment:
+      HF_TOKEN: ${HF_TOKEN:-}
+      GOOGLE_APPLICATION_CREDENTIALS: /gcp-key.json
+    entrypoint: ["bash", "/startup.sh"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    shm_size: "2gb"
+    restart: unless-stopped

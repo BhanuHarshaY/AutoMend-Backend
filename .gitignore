@@ -2,4 +2,15 @@ ClassifierModel/classifierModelAPI/models/*.safetensors
 ClassifierModel/classifierModelAPI/models/*.bin
 ClassifierModel/classifierModelAPI/models/*.pt
 ClassifierModel/classifierModelAPI/models/pytorch_model.bin
+
+# GeneratorModel -- GCS-downloaded fused model weights
+GeneratorModel/models/*.safetensors
+GeneratorModel/models/*.bin
+GeneratorModel/models/*.pt
+GeneratorModel/models/pytorch_model.bin
+
+# Environment files with credentials
+GeneratorModel/.env
+
 *.pyc
+__pycache__/
