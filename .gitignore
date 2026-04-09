@@ -1,5 +1,5 @@
-models/*.safetensors
-models/*.bin
-models/*.pt
-models/pytorch_model.bin
+ClassifierModel/classifierModelAPI/models/*.safetensors
+ClassifierModel/classifierModelAPI/models/*.bin
+ClassifierModel/classifierModelAPI/models/*.pt
+ClassifierModel/classifierModelAPI/models/pytorch_model.bin
 *.pyc
