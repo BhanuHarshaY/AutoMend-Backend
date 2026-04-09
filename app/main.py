@@ -7,6 +7,7 @@ import torch
 from fastapi import FastAPI, HTTPException, Request
 from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
+from app.inference import run_inference
 from app.schemas.anomaly import LABEL_NAMES, AnomalyRequest, AnomalyResponse
 
 logging.basicConfig(
@@ -94,18 +95,18 @@ def health():
     }
 
 
-def _run_inference_placeholder(sequence_ids: list[int]) -> tuple[int, float]:
-    # Placeholder -- Task 3 will replace this with real tokenization + forward pass
-    return 0, 0.5
-
-
 @app.post("/predict_anomaly", response_model=AnomalyResponse)
 def predict_anomaly(request: Request, body: AnomalyRequest):
     if not getattr(request.app.state, "model_loaded", False):
         raise HTTPException(status_code=503, detail="Model not loaded")
 
     try:
-        class_id, confidence_score = _run_inference_placeholder(body.sequence_ids)
+        class_id, confidence_score = run_inference(
+            request.app.state.model,
+            request.app.state.tokenizer,
+            body.sequence_ids,
+            request.app.state.device,
+        )
     except Exception as exc:
         logger.exception("Inference error: %s", exc)
         raise HTTPException(status_code=500, detail="Inference failed")
