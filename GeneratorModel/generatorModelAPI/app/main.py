@@ -209,6 +209,10 @@ async def generate_workflow(body: GenerateRequest) -> GenerateResponse:
     logger.info(
         "Workflow validated: %d step(s)", len(validated.workflow.steps)
     )
+    # validated is a WorkflowResponse, so model_dump() produces {"workflow": {"steps": [...]}}.
+    # This means the full response envelope is {"success": true, "workflow": {"workflow": {"steps": [...]}}}
+    # The double-nesting (response.workflow.workflow.steps) is intentional -- WorkflowResponse
+    # wraps the Workflow object to match the LLM output format {"workflow": {...}}.
     return GenerateResponse(
         success=True,
         workflow=validated.model_dump(),

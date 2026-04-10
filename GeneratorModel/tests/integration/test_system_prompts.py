@@ -55,6 +55,10 @@ class TestToolRegistryEnforcement:
                 f"Model returned known-invalid tool '{tool}'"
             )
 
+# NOTE: These determinism tests pass trivially against the mock server because
+# mock_proxy.py uses regex pattern matching and always returns the same response
+# for the same prompt. They are only meaningful when PROXY_URL points at a real
+# vLLM instance (temperature=0 should produce identical outputs across runs).
 class TestDeterminism:
     """
     With temperature=0, the same prompt should produce identical workflows.

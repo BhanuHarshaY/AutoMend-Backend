@@ -175,7 +175,7 @@ class TestUnicodeInput:
     PROMPTS = [
         "Scale the café-service deployment to 3 replicas in production",
         "Restart the api-server 🚀 deployment in default namespace",
-        "Rollback deployment — the latency is too high (über 500ms)",
+        "Rollback deployment -- the latency is too high (über 500ms)",
         "发送通知到 #incidents 频道",  # Chinese characters
         "Escalar el modelo de fraude a 5 réplicas en producción",  # Spanish
     ]
@@ -398,6 +398,11 @@ class TestWhitespaceOnly:
     Whitespace-only input should be handled by Pydantic's min_length=1.
     A string of spaces has length > 0 so it may pass validation and reach vLLM,
     or the proxy may strip it. Either way, no 500.
+
+    NOTE: Pydantic's min_length=1 checks character count, not stripped length,
+    so "   " (3 spaces) passes validation and is forwarded to the LLM as-is.
+    Against the mock server this returns a predictable default response.
+    Against real vLLM the output is unpredictable -- do not assert success/failure.
     """
 
     def test_no_500_error(self):
